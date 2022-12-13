@@ -51,16 +51,16 @@ if __name__ == '__main__':
                     fans = psutil.sensors_fans()
                     battery = psutil.sensors_battery()
 
-                    memory_str = "MEM USAGE" + str(memory) + "MB\n"
+                    memory_str = "MEM USAGE" + str(memory[0]) + "MB\n"
                     cpu_str = "CPU USAGE:" + str(cpu_percentage) + "%\n"
-                    cputimes_str = "CPU TIMES:" + str(cputimes) + "%\n"
+                    cputimes_str = "CPU TIMES:" + str(cputimes[1]) + "%\n"
                     cpucount_str = "CPU COUNT:" + str(cpucount) + "%\n"
-                    cpustats_str = "CPU STATS:" + str(cpustats) + "%\n"
-                    cpufreq_str = "CPU FREQ:" + str(cpufreq) + "%\n"
-                    swapmemory_str = "SWAP MEM AVL:" + str(swapmemory) + "%\n"
+                    cpustats_str = "CPU STATS:" + str(cpustats[1]) + "%\n"
+                    cpufreq_str = "CPU FREQ:" + str(cpufreq[0]) + "%\n"
+                    swapmemory_str = "SWAP MEM AVL:" + str(swapmemory[0]) + "%\n"
                     diskpartitions_str = "DISKS AVL:" + \
                         str(diskpartitions) + "%\n"
-                    netiocounters_str = "NET I/O:" + str(netiocounters) + "%\n"
+                    netiocounters_str = "NET I/O:" + str(netiocounters[0]) + "%\n"
                     netconnections_str = "NET CONN:" + \
                         str(netconnections) + "%\n"
                     temperatures_str = "TEMP:" + str(temperatures) + "%\n"
@@ -82,8 +82,8 @@ if __name__ == '__main__':
                         .field("cpu_times_interrupt", cputimes[3])
                         .field("cpu_times_dpc", cputimes[4])
                         .field("cpu_count", cpucount)
-                        .field("cpu_stats", cpu_stats[1])
-                        .field("cpu_freq_current", cpu_freq[0])
+                        .field("cpu_stats", cpustats[1])
+                        .field("cpu_freq_current", cpufreq[0])
                         .field("cpu_freq_max", cpu_freq[2])
                         .field("swap_mem_total", swapmemory[0])
                         .field("swap_mem_free", swapmemory[2])
@@ -94,17 +94,17 @@ if __name__ == '__main__':
 
                     arduino.write(cpu_str.encode())
                     arduino.write(memory_str.encode())
-                    # arduino.write(cputimes_str.encode())
-                    # arduino.write(cpucount_str.encode())
-                    # arduino.write(cpustats_str.encode())
-                    # arduino.write(cpufreq_str.encode())
-                    # arduino.write(swapmemory_str.encode())
-                    # arduino.write(diskpartitions_str.encode())
-                    # arduino.write(netiocounters_str.encode())
-                    # arduino.write(netconnections_str.encode())
-                    # arduino.write(temperatures_str.encode())
-                    # arduino.write(fans_str.encode())
-                    # arduino.write(battery_str.encode())
+                    arduino.write(cputimes_str.encode())
+                    arduino.write(cpucount_str.encode())
+                    arduino.write(cpustats_str.encode())
+                    arduino.write(cpufreq_str.encode())
+                    arduino.write(swapmemory_str.encode())
+                    arduino.write(diskpartitions_str.encode())
+                    arduino.write(netiocounters_str.encode())
+                    #arduino.write(netconnections_str.encode())
+                    arduino.write(temperatures_str.encode())
+                    arduino.write(fans_str.encode())
+                    arduino.write(battery_str.encode())
                     write_api.write(
                         bucket=bucket, org="mada.kasler@gmail.com", record=point)
                     time.sleep(5)
