@@ -47,111 +47,155 @@
 // with the arduino pin number it is connected to
 const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(11,12,13,3,4,5,6,7,8,9,10);
-unsigned buttonCounter = 0;
-unsigned buttonStartTime = 0;
-int buttonState = 0;  
-int setButton = LOW;
-int lastButtonState = 0;
- // variable for reading the pushbutton status
-bool firstPress = true;
-const int buttonPin = 2;  // the number of the pushbutton pin
+//-------Pins-----//
+int up = 2;               //Up button
+        //Down button
+//---------Storage debounce function-----//
+boolean current_up = LOW;          
+boolean last_up=LOW;            
+boolean last_down = LOW;
+boolean current_down = LOW;
+          // the number of the pushbutton pin
    // the number of the LED pin
+   //Counter to change positions of pages
+String data;
+String data1;
+String data2;
+String data3;
+String data4;
+String data5;
+String data6;
+String data7;
+String data8;
+String data9;
+String data10;
+String data11;
+String data12;
+String data13;
+String data14;
+String data15;
+
+int page_counter=1 ;
 
 void setup() {
    Serial.begin(9600);
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
-    pinMode(buttonPin, INPUT);
+    pinMode(up, INPUT);
   // Print a message to the LCD.
   //lcd.print("hello, world!");
+}
+
+   //---- De-bouncing function for all buttons----//
+boolean debounce(boolean last, int pin)
+{
+boolean current = digitalRead(pin);
+if (last != current)
+{
+delay(5);
+current = digitalRead(pin);
+}
+return current;
 }
 
 void loop() {
   // set the cursor to column 0, line 1
   // (note: line 1 is the second row, since counting begins with 0):
+current_up = debounce(last_up, up);      
+//Page Up
+    if (last_up== LOW && current_up == HIGH){  //When up button is pressed
+      lcd.clear();                     //When page is changed, lcd clear to print new page  
+      if(page_counter <7){              //Page counter never higher than 3(total of pages)
+      page_counter= page_counter +1;   //Page up
+      
+      }
+      else{
+      page_counter= 7;  
+      }
+  }
+  
+    last_up = current_up;
 
   // print the number of seconds since reset:
 
    if (Serial.available() > 0) {
-    String data = Serial.readStringUntil('\n');
-    String data1 = Serial.readStringUntil('\n');
-    String data2 = Serial.readStringUntil('\n');
-    String data3 = Serial.readStringUntil('\n');
-    String data4 = Serial.readStringUntil('\n');
-    String data5 = Serial.readStringUntil('\n');
-    String data6 = Serial.readStringUntil('\n');
-    String data7 = Serial.readStringUntil('\n');
-    String data8 = Serial.readStringUntil('\n');
-    String data9 = Serial.readStringUntil('\n');
-    String data10 = Serial.readStringUntil('\n');
-    String data11 = Serial.readStringUntil('\n');
-    String data12 = Serial.readStringUntil('\n');
-    String data13 = Serial.readStringUntil('\n');
-    String data14 = Serial.readStringUntil('\n');
-    String data15 = Serial.readStringUntil('\n');
-    String data16 = Serial.readStringUntil('\n');
-    String data17 = Serial.readStringUntil('\n');
-    String data18 = Serial.readStringUntil('\n');
-    String data19 = Serial.readStringUntil('\n');
-     buttonState = digitalRead(buttonPin);
-     if (buttonState != lastButtonState)
-    {
-    lastButtonState=buttonState;    
-             
-        if (buttonState == HIGH)
-      {
-        buttonCounter++;        // count one up 
-        Serial.println(buttonCounter);
-      
-        buttonStartTime = millis(); //Start timer to count how long the button is held
-        firstPress = false; //set flag to skip this if statement until after the button has been released
-      }
-         if(buttonCounter % 6 == 0)
-          {
-              lcd.setCursor(0, 0);
-            lcd.print(data);
-            
-               lcd.setCursor(0, 1);
-              lcd.print(data1);
-              delay(250);
-          }
-              if(buttonCounter % 6 == 1)
-          {
-               lcd.setCursor(0, 0);
-             lcd.print(data2);
-               lcd.setCursor(0, 1);
-              lcd.print(data3);
-              delay(250);
-          }
-              if(buttonCounter % 6 == 2)
-          {
-             lcd.setCursor(0, 0);
-            lcd.print(data4);
-               lcd.setCursor(0, 1);
-              lcd.print(data5);
-              delay(250);
-          }
-              if(buttonCounter % 6 == 3)
-          {
-            lcd.setCursor(0, 0);
-             lcd.print(data6);
-               lcd.setCursor(0, 1);
-             lcd.print(data7);
-              delay(250);
-          }
-              if(buttonCounter % 6 == 4)
-          {
-              lcd.setCursor(0, 0);
-              
-             lcd.print(data8);
-               lcd.setCursor(0, 1);
-              lcd.print(data9);
-              delay(250);
-          }
+  data = Serial.readStringUntil('\n');
+  data1 = Serial.readStringUntil('\n');
+  data2 = Serial.readStringUntil('\n');
+  data3 = Serial.readStringUntil('\n');
+  data4 = Serial.readStringUntil('\n');
+  data5 = Serial.readStringUntil('\n');
+  data6 = Serial.readStringUntil('\n');
+  data7 = Serial.readStringUntil('\n');
+  data8 = Serial.readStringUntil('\n');
+  data9 = Serial.readStringUntil('\n');
+  data10 = Serial.readStringUntil('\n');
+  data11 = Serial.readStringUntil('\n');
+  data12 = Serial.readStringUntil('\n');
+  data13 = Serial.readStringUntil('\n');
+  data14 = Serial.readStringUntil('\n');
+  data15 = Serial.readStringUntil('\n');
+ 
+  }
+    switch (page_counter) {
+   
+    case 1:{     //Design of home page 1
+    lcd.setCursor(0, 0);
+    lcd.print(data);    
+    lcd.setCursor(0, 1);
+    lcd.print(data1);
     }
+    break;
+
+    case 2: { //Design of page 2 
+      lcd.setCursor(0, 0);
+    lcd.print(data2);    
+    lcd.setCursor(0, 1);
+    lcd.print(data3);
+    }
+    break;
+
+    case 3: {   //Design of page 3 
+      lcd.setCursor(0, 0);
+    lcd.print(data4);    
+    lcd.setCursor(0, 1);
+    lcd.print(data5);
+    }
+    break;
+    
+        case 4: {   //Design of page 4
+      lcd.setCursor(0, 0);
+    lcd.print(data6);    
+    lcd.setCursor(0, 1);
+    lcd.print(data7);
+    }
+    break;
+
+       case 5: {   //Design of page 4
+      lcd.setCursor(0, 0);
+    lcd.print(data8);    
+    lcd.setCursor(0, 1);
+    lcd.print(data9);
+    }
+    break;
+
+       case 6: {   //Design of page 4
+      lcd.setCursor(0, 0);
+    lcd.print(data10);    
+    lcd.setCursor(0, 1);
+    lcd.print(data11);
+    }
+    break;
+
+       case 7: {   //Design of page 4
+      lcd.setCursor(0, 0);
+    lcd.print(data12);    
+    lcd.setCursor(0, 1);
+    lcd.print(data13);
+    }
+    break;
 
  
     
-   
   }
 }
