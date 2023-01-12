@@ -9,10 +9,10 @@ import time
 from datetime import datetime
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
-from smbus2 import SMBus
 import serial
 import time
 import psutil
+from gpiozero import CPUTemperature
 
 if __name__ == '__main__':
 
@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     bucket = "monitoring"
     write_api = client.write_api(write_option=SYNCHRONOUS)
-    with serial.Serial("/dev/ttyACM4", 9600, timeout=1) as arduino:
+    with serial.Serial("/dev/ttyUSB0", 9600, timeout=1) as arduino:
         time.sleep(0.1)  # wait for serial to open
         if arduino.isOpen():
             print("{} connected!".format(arduino.port))
@@ -47,11 +47,11 @@ if __name__ == '__main__':
                     diskpartitions = psutil.disk_partitions(all=False)
                     netiocounters = psutil.net_io_counters()
                     netconnections = psutil.net_connections(kind='inet')
-                    temperatures = psutil.sensors_temperatures()
+                    temperatures = CPUTemperature().temperature
                     fans = psutil.sensors_fans()
                     battery = psutil.sensors_battery()
 
-                    memory_str = "MEM USAGE" + str(memory[0]) + "MB\n"
+                    memory_str = "MEM USAGE:" + str(memory[0]) + "MB\n"
                     cpu_str = "CPU USAGE:" + str(cpu_percentage) + "%\n"
                     cputimes_str = "CPU TIMES:" + str(cputimes[1]) + "%\n"
                     cpucount_str = "CPU COUNT:" + str(cpucount) + "%\n"
@@ -60,15 +60,17 @@ if __name__ == '__main__':
                     swapmemory_str = "SWAP MEM AVL:" + str(swapmemory[0]) + "%\n"
                     diskpartitions_str = "DISKS AVL:" + \
                         str(diskpartitions) + "%\n"
-                    netiocounters_str = "NET I/O:" + str(netiocounters[0]) + "%\n"
+                    netiocounters_str = "PCK_SNT" + str(netiocounters[2]) + "%\n"
                     netconnections_str = "NET CONN:" + \
                         str(netconnections) + "%\n"
-                    temperatures_str = "TEMP:" + str(temperatures) + "%\n"
-                    fans_str = "NET CONN:" + str(fans) + "%\n"
-                    battery_str = "NET CONN:" + str(battery) + "%\n"
+                    temperatures_str = "CPU_TEMP:" + str(temperatures) + "%\n"
+                    fans_str = "FANS:" + str(fans) + "%\n"
+                    battery_str = "BATTERY:" + str(battery) + "%\n"
+                    print(netiocounters[2])
+                    
 
                     point = (
-                        Point("measurement2")
+                        Point("measurement3")
                         .tag("tagname1", "tagvalue1")
                         .field("cpu_percentage", cpu_percentage)
                         .field("memory_total", memory[0])
@@ -84,7 +86,7 @@ if __name__ == '__main__':
                         .field("cpu_count", cpucount)
                         .field("cpu_stats", cpustats[1])
                         .field("cpu_freq_current", cpufreq[0])
-                        .field("cpu_freq_max", cpu_freq[2])
+                        .field("cpu_freq_max", cpufreq[2])
                         .field("swap_mem_total", swapmemory[0])
                         .field("swap_mem_free", swapmemory[2])
                         .field("bytes_sent", netiocounters[0])
@@ -99,12 +101,12 @@ if __name__ == '__main__':
                     arduino.write(cpustats_str.encode())
                     arduino.write(cpufreq_str.encode())
                     arduino.write(swapmemory_str.encode())
-                    arduino.write(diskpartitions_str.encode())
+#                     arduino.write(diskpartitions_str.encode())
                     arduino.write(netiocounters_str.encode())
-                    #arduino.write(netconnections_str.encode())
+#                     arduino.write(netconnections_str.encode())
                     arduino.write(temperatures_str.encode())
-                    arduino.write(fans_str.encode())
-                    arduino.write(battery_str.encode())
+#                     arduino.write(fans_str.encode())
+#                     arduino.write(battery_str.encode())
                     write_api.write(
                         bucket=bucket, org="mada.kasler@gmail.com", record=point)
                     time.sleep(5)
