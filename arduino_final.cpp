@@ -61,6 +61,7 @@ const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(11,12,13,3,4,5,6,7,8,9,10);
 //-------Pins-----//
 int up = 2;               //Up button
+int down = 22;
         //Down button
 //---------Storage debounce function-----//
 boolean current_up = LOW;          
@@ -94,6 +95,7 @@ void setup() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
     pinMode(up, INPUT);
+     pinMode(down, INPUT);
      display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
   display.clearDisplay();
   // Print a message to the LCD.
@@ -115,7 +117,8 @@ return current;
 void loop() {
   // set the cursor to column 0, line 1
   // (note: line 1 is the second row, since counting begins with 0):
-current_up = debounce(last_up, up);      
+current_up = debounce(last_up, up);    
+current_down = debounce(last_down, down);  
 //Page Up
     if (last_up== LOW && current_up == HIGH){  //When up button is pressed
       lcd.clear();                     //When page is changed, lcd clear to print new page  
@@ -129,6 +132,19 @@ current_up = debounce(last_up, up);
   }
   
     last_up = current_up;
+
+        if (last_down== LOW && current_down == HIGH){ //When down button is pressed
+      lcd.clear();                     //When page is changed, lcd clear to print new page    
+      if(page_counter >1){              //Page counter never lower than 1 (total of pages)
+      page_counter= page_counter -1;   //Page down
+      
+      }
+      else{
+      page_counter= 1;  
+      }
+  }
+    
+    last_down = current_down;
 
   // print the number of seconds since reset:
 
