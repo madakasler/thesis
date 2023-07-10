@@ -10,7 +10,7 @@ from datetime import datetime
 import time
 import os
 import influxdb_client
-//PYTHON
+
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # lsusb to check device name
@@ -64,10 +64,6 @@ if __name__ == '__main__':
 
     print(pids)
 
-    # for proc in psutil.process_iter(['pid', 'name']):
-    # print(proc.info)
-
-    # print(list(psutil.win_service_iter()))
 
     with serial.Serial("/dev/ttyUSB0", 9600, timeout=1) as arduino:
         time.sleep(0.1)  # wait for serial to open
@@ -125,59 +121,9 @@ if __name__ == '__main__':
                     fans_str = fans_str + str(fans) + "%\n"
                     battery_str = battery_str + str(battery) + "%\n"
 
-                    # Data validations
-                    # Data validations
-                    if memory[0] < 0:
-                        print("Invalid memory value detected!")
-                        pass
+                    
 
-                    if cpu_percentage < 0 or cpu_percentage > 100:
-                        print("Invalid CPU percentage value detected!")
-                        pass
 
-                    if cputimes[1] < 0 or cputimes[1] > 100:
-                        print("Invalid CPU times value detected!")
-                        pass
-
-                    if cpucount < 0:
-                        print("Invalid CPU count value detected!")
-                        pass
-
-                    if cpustats[1] < 0:
-                        print("Invalid CPU stats value detected!")
-                        pass
-
-                    if cpufreq[0] < 0:
-                        print("Invalid CPU frequency value detected!")
-                        pass
-
-                    if swapmemory[0] < 0:
-                        print("Invalid swap memory value detected!")
-                        pass
-
-                    if any(partition.mountpoint == '' for partition in diskpartitions):
-                        print("Invalid disk partition value detected!")
-                        pass
-
-                    if netiocounters[2] < 0:
-                        print("Invalid network I/O counters value detected!")
-                        pass
-
-                    if len(netconnections) == 0:
-                        print("No network connections detected!")
-                        pass
-
-                    if temperatures < 0:
-                        print("Invalid CPU temperature value detected!")
-                        pass
-
-                    if not fans:
-                        print("No fan information available!")
-                        pass
-
-                    if battery.percent < 0 or battery.percent > 100:
-                        print("Invalid battery percentage value detected!")
-                        pass
 
                     print(netiocounters[2])
 
@@ -220,15 +166,16 @@ if __name__ == '__main__':
                     arduino.write(cpucount_str.encode())
                     arduino.write(cpustats_str.encode())
                     arduino.write(cpufreq_str.encode())
-                    arduino.write(swapmemory_str.encode())
+                    print(cpufreq_str.encode())
+                    #arduino.write(swapmemory_str.encode())
 #                     arduino.write(diskpartitions_str.encode())
-                    arduino.write(netiocounters_str.encode())
+                    #arduino.write(netiocounters_str.encode())
 #                     arduino.write(netconnections_str.encode())
-                    arduino.write(temperatures_str.encode())
+                    #arduino.write(temperatures_str.encode())
 #                     arduino.write(fans_str.encode())
 #                     arduino.write(battery_str.encode())
 
-                    cpu_percentage = 0
+                    
                     memory_str = "MEM USAGE:"
                     cpu_str = "CPU USAGE:"
                     cputimes_str = "CPU TIMES:"
